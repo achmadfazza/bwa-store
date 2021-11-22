@@ -1,9 +1,9 @@
-const Player = require("../player/model");
-const path = require("path");
-const fs = require("fs");
-const config = require("../../config");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
+const Player = require('../player/model');
+const path = require('path');
+const fs = require('fs');
+const config = require('../../config');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 module.exports = {
   signUp: async (req, res, next) => {
@@ -12,8 +12,8 @@ module.exports = {
 
       if (req.file) {
         let tmp_path = req.file.path;
-        let originalExt = req.file.originalname.split(".")[req.file.originalname.split(".").length - 1];
-        let filename = req.file.filename + "." + originalExt;
+        let originalExt = req.file.originalname.split('.')[req.file.originalname.split('.').length - 1];
+        let filename = req.file.filename + '.' + originalExt;
         let target_path = path.resolve(config.rootPath, `public/uploads/${filename}`);
 
         const src = fs.createReadStream(tmp_path);
@@ -21,7 +21,7 @@ module.exports = {
 
         src.pipe(dest);
 
-        src.on("end", async () => {
+        src.on('end', async () => {
           try {
             const player = new Player({ ...payload, avatar: filename });
 
@@ -30,8 +30,8 @@ module.exports = {
             delete player._doc.password;
             res.status(201).json({ data: player });
           } catch (err) {
-            if (err && err.name === "Validation Error") {
-              res.status(404).json({
+            if (err && err.name === 'Validation Error') {
+              res.status(422).json({
                 error: 1,
                 message: err.message,
                 fields: err.errors,
@@ -48,7 +48,7 @@ module.exports = {
         res.status(201).json({ data: player });
       }
     } catch (err) {
-      if (err && err.name === "ValidationError") {
+      if (err && err.name === 'ValidationError') {
         res.status(404).json({
           error: 1,
           message: err.message,
@@ -81,15 +81,15 @@ module.exports = {
             );
             res.status(200).json({ data: { token } });
           } else {
-            res.status(403).json({ message: "Password yang anda masukan salah" });
+            res.status(403).json({ message: 'Password yang anda masukan salah' });
           }
         } else {
-          res.status(403).json({ message: "Email yang anda masukan belum terdaftar" });
+          res.status(403).json({ message: 'Email yang anda masukan belum terdaftar' });
         }
       })
       .catch((err) => {
         res.status(500).json({
-          message: err.message || "Internal Server Error",
+          message: err.message || 'Internal Server Error',
         });
         next();
       });
