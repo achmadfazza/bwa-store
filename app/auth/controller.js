@@ -12,8 +12,8 @@ module.exports = {
 
       if (req.file) {
         let tmp_path = req.file.path;
-        let originalExt = req.file.originalname.split('.')[req.file.originalname.split('.').length - 1];
-        let filename = req.file.filename + '.' + originalExt;
+        let originaExt = req.file.originalname.split('.')[req.file.originalname.split('.').length - 1];
+        let filename = req.file.filename + '.' + originaExt;
         let target_path = path.resolve(config.rootPath, `public/uploads/${filename}`);
 
         const src = fs.createReadStream(tmp_path);
@@ -28,36 +28,40 @@ module.exports = {
             await player.save();
 
             delete player._doc.password;
+
             res.status(201).json({ data: player });
           } catch (err) {
-            if (err && err.name === 'Validation Error') {
-              res.status(422).json({
+            if (err && err.name === 'ValidationError') {
+              return res.status(422).json({
                 error: 1,
                 message: err.message,
                 fields: err.errors,
               });
             }
-            next();
+            next(err);
           }
         });
       } else {
         let player = new Player(payload);
+
         await player.save();
 
         delete player._doc.password;
+
         res.status(201).json({ data: player });
       }
     } catch (err) {
       if (err && err.name === 'ValidationError') {
-        res.status(422).json({
+        return res.status(422).json({
           error: 1,
           message: err.message,
           fields: err.errors,
         });
       }
-      next();
+      next(err);
     }
   },
+
   signIn: (req, res, next) => {
     const { email, password } = req.body;
     // cek email player
