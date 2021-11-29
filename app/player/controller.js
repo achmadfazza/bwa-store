@@ -90,7 +90,7 @@ module.exports = {
 
       const payload = {
         historyVoucherTopup: {
-          gameaName: res_voucher._doc.name,
+          gameName: res_voucher._doc.name,
           category: res_voucher._doc.category ? res_voucher._doc.category.name : '',
           thumbnail: res_voucher._doc.thumbnail,
           coinName: res_nominal._doc.coinName,
