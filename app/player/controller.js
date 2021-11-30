@@ -223,6 +223,7 @@ module.exports = {
       res.status(500).json({ message: err.message || 'Internal Server Error' });
     }
   },
+
   editProfile: async (req, res, next) => {
     try {
       const { name = '', phoneNumber = '' } = req.body;
